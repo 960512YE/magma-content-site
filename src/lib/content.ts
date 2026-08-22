@@ -52,6 +52,9 @@ export function getOne(collection: Collection, slug: string): ContentDoc | null 
 
 /** 마크다운 → HTML. GFM 지원, raw HTML 은 안전하게 제거. */
 export async function renderMarkdown(md: string): Promise<string> {
+  // 출처 링크 섹션은 원고에 남기되 독자 화면에는 내보내지 않는다.
+  // 근거는 원고 파일과 content-pipeline/research/ 에 그대로 보존된다.
+  md = md.split(/\n#{2}\s*출처\s*링크\s*\n/)[0];
   const out = await remark().use(remarkGfm).use(remarkHtml, { sanitize: true }).process(md);
   return String(out);
 }
